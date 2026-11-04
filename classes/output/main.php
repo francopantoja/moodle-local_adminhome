@@ -34,7 +34,6 @@ use templatable;
  * Main view model for the custom home: welcome, site summary cards and courses grouped by category.
  */
 class main implements renderable, templatable {
-
     /**
      * Export the data the Mustache template needs.
      *
@@ -214,7 +213,8 @@ class main implements renderable, templatable {
         $groups[] = [
             'name'       => format_string($category->get_formatted_name()),
             'issub'      => $depth > 0,
-            'indent'     => $depth * 24,   // px of left indentation per level.
+            // Left indentation in px, 24 per level.
+            'indent'     => $depth * 24,
             'courses'    => $courses,
             'hascourses' => !empty($courses),
         ];

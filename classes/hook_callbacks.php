@@ -30,7 +30,6 @@ use core\hook\output\before_http_headers;
  * Hook callbacks.
  */
 class hook_callbacks {
-
     /**
      * Redirect the chosen users from the site frontpage to the custom home.
      *
