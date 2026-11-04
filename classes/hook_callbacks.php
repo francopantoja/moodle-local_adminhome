@@ -46,7 +46,7 @@ class hook_callbacks {
         }
 
         // Only when the plugin is enabled.
-        if (!get_config('local_adminhome', 'enabled')) {
+        if (!self::is_enabled()) {
             return;
         }
 
@@ -80,7 +80,7 @@ class hook_callbacks {
     public static function is_target_user(): bool {
         global $CFG, $DB, $USER;
 
-        if (get_config('local_adminhome', 'siteadmins') && is_siteadmin()) {
+        if (self::setting_on('siteadmins') && is_siteadmin()) {
             return true;
         }
 
@@ -98,5 +98,25 @@ class hook_callbacks {
         [$insql, $params] = $DB->get_in_or_equal($roleids, SQL_PARAMS_NAMED);
         $params['userid'] = $USER->id;
         return $DB->record_exists_select('role_assignments', "userid = :userid AND roleid $insql", $params);
+    }
+
+    /**
+     * Whether the plugin logic is switched on.
+     *
+     * @return bool
+     */
+    public static function is_enabled(): bool {
+        return self::setting_on('enabled');
+    }
+
+    /**
+     * Whether a checkbox setting that is on by default is on; a setting never saved counts as on.
+     *
+     * @param string $name Setting name.
+     * @return bool
+     */
+    public static function setting_on(string $name): bool {
+        $value = get_config('local_adminhome', $name);
+        return $value === false || (bool) $value;
     }
 }

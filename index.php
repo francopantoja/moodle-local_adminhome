@@ -24,10 +24,12 @@
 
 require(__DIR__ . '/../../config.php');
 
+use local_adminhome\hook_callbacks;
+
 require_login();
 
 // Only the users chosen in the settings; the rest go to the normal frontpage.
-if (!get_config('local_adminhome', 'enabled') || isguestuser() || !\local_adminhome\hook_callbacks::is_target_user()) {
+if (!hook_callbacks::is_enabled() || isguestuser() || !hook_callbacks::is_target_user()) {
     redirect(new moodle_url('/', ['noadminhome' => 1]));
 }
 

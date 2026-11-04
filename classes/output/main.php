@@ -154,8 +154,7 @@ class main implements renderable, templatable {
      * @return bool
      */
     private static function card_enabled(string $card): bool {
-        $value = get_config('local_adminhome', 'showcard_' . $card);
-        return $value === false || (bool) $value;
+        return \local_adminhome\hook_callbacks::setting_on('showcard_' . $card);
     }
 
     /**
