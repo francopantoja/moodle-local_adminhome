@@ -1,0 +1,115 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_adminhome/main
+
+    Custom home: welcome, site summary cards (site admins) and courses grouped by category.
+
+    Context variables required for this template:
+    * iconurl - URL of the plugin icon, shown next to the welcome.
+    * welcome - Welcome text with the first name of the user.
+    * hascards - Whether the site summary cards are shown (site admins only).
+    * cards - Site summary cards, each with icon, label, value and desc.
+    * showfrontpage - Whether the button to the normal frontpage is shown.
+    * frontpageurl - URL to view the real frontpage (bypassing the redirect).
+    * hascategories - Whether there is at least one category with courses.
+    * categories - Array of top-level categories, each with:
+        * groups - Flat, tree-ordered array of category groups, each with:
+            * name - Category (or subcategory) name.
+            * issub - Whether it is a subcategory.
+            * indent - Left indentation in px.
+            * hascourses - Whether this group has courses.
+            * courses - Array of courses, each with: name, url.
+
+    Example context (json):
+    {
+        "iconurl": "https://example.com/local/adminhome/pix/icon.svg",
+        "welcome": "Welcome, Ana!",
+        "hascards": true,
+        "cards": [{"icon": "👥", "label": "Users", "value": "12.402", "desc": "Active accounts"}],
+        "showfrontpage": true,
+        "frontpageurl": "https://example.com/?noadminhome=1",
+        "hascategories": true,
+        "categories": [
+            {
+                "groups": [
+                    {
+                        "name": "Categoría 1",
+                        "issub": false,
+                        "indent": 0,
+                        "hascourses": true,
+                        "courses": [
+                            {"name": "Curso 1", "url": "https://example.com/course/view.php?id=2"}
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}}
+<div class="local-adminhome">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="local-adminhome-welcome d-flex align-items-center mb-0">
+            <img src="{{iconurl}}" alt="" class="local-adminhome-icon me-3 mr-3">
+            {{welcome}}
+        </h2>
+        {{#showfrontpage}}
+            <a href="{{frontpageurl}}" class="btn btn-outline-secondary btn-sm">{{#str}} viewfrontpage, local_adminhome {{/str}}</a>
+        {{/showfrontpage}}
+    </div>
+
+    {{#hascards}}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 gx-3 mb-2">
+            {{#cards}}
+                <div class="col mb-3">
+                    <div class="local-adminhome-card card h-100">
+                        <div class="card-body">
+                            <div class="local-adminhome-card-label">
+                                <span aria-hidden="true">{{icon}}</span> {{label}}
+                            </div>
+                            <div class="local-adminhome-card-value">{{value}}</div>
+                            <div class="text-muted small">{{desc}}</div>
+                        </div>
+                    </div>
+                </div>
+            {{/cards}}
+        </div>
+    {{/hascards}}
+
+    {{#hascategories}}
+        <div class="local-adminhome-cats">
+            {{#categories}}
+                <section class="local-adminhome-cat">
+                    {{#groups}}
+                        {{#hascourses}}
+                            <div class="local-adminhome-group" style="margin-left: {{indent}}px;">
+                                <h3 class="local-adminhome-cat-title {{#issub}}local-adminhome-subcat-title{{/issub}}">{{name}}</h3>
+                                {{#courses}}
+                                    <a class="local-adminhome-course" href="{{url}}">{{name}}</a>
+                                {{/courses}}
+                            </div>
+                        {{/hascourses}}
+                    {{/groups}}
+                </section>
+            {{/categories}}
+        </div>
+    {{/hascategories}}
+
+    {{^hascategories}}
+        <div class="alert alert-info">{{#str}} nocourses, local_adminhome {{/str}}</div>
+    {{/hascategories}}
+</div>

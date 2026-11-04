@@ -1,0 +1,77 @@
+/* local_adminhome: colours come from the brand colour of the theme (Bootstrap 5 and Bootstrap 4 variables). */
+
+.local-adminhome {
+    --local-adminhome-brand: var(--bs-primary, var(--primary, #0f6cbf));
+    --local-adminhome-text: var(--bs-body-color, var(--body-color, #1d2125));
+}
+
+.local-adminhome-cats {
+    padding: 8px 0;
+}
+
+.local-adminhome-cat {
+    margin-bottom: 28px;
+}
+
+.local-adminhome-cat-title {
+    color: var(--local-adminhome-text);
+    border-left: 5px solid var(--local-adminhome-brand);
+    padding-left: 10px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+/* Subcategories: a lighter tone of the brand colour. */
+.local-adminhome-subcat-title {
+    font-size: 1.05rem;
+    opacity: 0.9;
+    border-left-color: color-mix(in srgb, var(--local-adminhome-brand) 45%, #fff);
+}
+
+.local-adminhome-course {
+    display: block;
+    background: var(--local-adminhome-brand);
+    border: 1px solid color-mix(in srgb, var(--local-adminhome-brand) 85%, #000);
+    color: #fff;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: background 0.15s ease;
+}
+
+/* Hover: a darker tone of the brand colour. */
+.local-adminhome-course:hover,
+.local-adminhome-course:focus {
+    background: color-mix(in srgb, var(--local-adminhome-brand) 80%, #000);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Site summary cards: white, with the brand colour on the top edge and on the number. */
+.local-adminhome-card {
+    border: 1px solid color-mix(in srgb, var(--local-adminhome-brand) 20%, #fff);
+    border-top: 4px solid var(--local-adminhome-brand);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.local-adminhome-card-label {
+    color: var(--local-adminhome-text);
+    font-weight: 600;
+}
+
+.local-adminhome-card-value {
+    color: var(--local-adminhome-brand);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0.25rem 0;
+}
+
+/* Welcome title with the plugin icon. */
+.local-adminhome-icon {
+    height: 48px;
+    width: 48px;
+}
