@@ -56,6 +56,9 @@ class main implements renderable, templatable {
         // Site summary cards: only for site admins, the rest of the users see just their courses.
         $cards = is_siteadmin() ? self::get_cards() : [];
 
+        // Quick links: also only for site admins, they usually point to admin pages.
+        $links = is_siteadmin() ? self::get_links() : [];
+
         global $USER;
 
         return [
@@ -63,6 +66,8 @@ class main implements renderable, templatable {
             'welcome'       => get_string('welcome', 'local_adminhome', $USER->firstname),
             'cards'         => $cards,
             'hascards'      => !empty($cards),
+            'links'         => $links,
+            'haslinks'      => !empty($links),
             'showfrontpage' => \local_adminhome\hook_callbacks::can_see_frontpage(),
             'frontpageurl'  => (new moodle_url('/', ['noadminhome' => 1]))->out(false),
             'categories'    => $categories,
@@ -137,6 +142,28 @@ class main implements renderable, templatable {
         }
 
         return $cards;
+    }
+
+    /**
+     * Quick links from the settings, each with text and url; links without text or URL are left out.
+     *
+     * @return array
+     */
+    private static function get_links(): array {
+        $links = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $text = trim((string) get_config('local_adminhome', 'link' . $i . 'text'));
+            $url = trim((string) get_config('local_adminhome', 'link' . $i . 'url'));
+            if ($text === '' || $url === '') {
+                continue;
+            }
+            $links[] = [
+                'text' => format_string($text),
+                // An address inside the site (/user/index.php) becomes a full one on this site.
+                'url'  => (new moodle_url($url))->out(false),
+            ];
+        }
+        return $links;
     }
 
     /**

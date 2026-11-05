@@ -24,6 +24,8 @@
     * welcome - Welcome text with the first name of the user.
     * hascards - Whether the site summary cards are shown (site admins only).
     * cards - Site summary cards, each with icon, label, value and desc.
+    * haslinks - Whether the quick links are shown (site admins only).
+    * links - Quick links, each with text and url.
     * showfrontpage - Whether the button to the normal frontpage is shown.
     * frontpageurl - URL to view the real frontpage (bypassing the redirect).
     * hascategories - Whether there is at least one category with courses.
@@ -35,6 +37,8 @@
         "welcome": "Welcome, Ana!",
         "hascards": true,
         "cards": [{"icon": "👥", "label": "Users", "value": "12.402", "desc": "Active accounts"}],
+        "haslinks": true,
+        "links": [{"text": "Enrol users", "url": "https://example.com/user/index.php"}],
         "showfrontpage": true,
         "frontpageurl": "https://example.com/?noadminhome=1",
         "hascategories": true,
@@ -79,6 +83,20 @@
             {{/cards}}
         </div>
     {{/hascards}}
+
+    {{#haslinks}}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 gx-3 mb-2">
+            {{#links}}
+                <div class="col mb-3">
+                    <a class="local-adminhome-link card h-100" href="{{url}}">
+                        <div class="card-body d-flex align-items-center">
+                            <span class="me-2 mr-2" aria-hidden="true">🔗</span>{{text}}
+                        </div>
+                    </a>
+                </div>
+            {{/links}}
+        </div>
+    {{/haslinks}}
 
     {{#hascategories}}
         <div class="local-adminhome-cats">

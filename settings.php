@@ -98,5 +98,31 @@ if ($hassiteconfig) {
             ]
         ));
         $settings->add_tab($page);
+
+        // Tab 4: quick links for site admins, empty by default. A link is only shown when it has both text and URL.
+        $page = new admin_settingpage('local_adminhome_links', get_string('linksheading', 'local_adminhome'));
+        $page->add(new admin_setting_heading(
+            'local_adminhome/linksinfo',
+            '',
+            get_string('linksinfo', 'local_adminhome')
+        ));
+        for ($i = 1; $i <= 3; $i++) {
+            $page->add(new admin_setting_configtext(
+                'local_adminhome/link' . $i . 'text',
+                get_string('link_text', 'local_adminhome', $i),
+                get_string('link_text_desc', 'local_adminhome'),
+                '',
+                PARAM_TEXT
+            ));
+            // PARAM_URL accepts full addresses and addresses inside the site, like /user/index.php.
+            $page->add(new admin_setting_configtext(
+                'local_adminhome/link' . $i . 'url',
+                get_string('link_url', 'local_adminhome', $i),
+                get_string('link_url_desc', 'local_adminhome'),
+                '',
+                PARAM_URL
+            ));
+        }
+        $settings->add_tab($page);
     }
 }

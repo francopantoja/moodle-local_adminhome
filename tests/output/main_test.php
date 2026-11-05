@@ -115,6 +115,32 @@ final class main_test extends \advanced_testcase {
     }
 
     /**
+     * Quick links: only the ones with text and URL, addresses inside the site made full, and only for site admins.
+     */
+    public function test_links(): void {
+        global $CFG;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        // Never saved: no links.
+        $this->assertFalse($this->export()['haslinks']);
+
+        set_config('link1text', 'Enrol users', 'local_adminhome');
+        set_config('link1url', '/user/index.php', 'local_adminhome');
+        set_config('link2text', 'No URL', 'local_adminhome');
+        set_config('link3text', 'Moodle', 'local_adminhome');
+        set_config('link3url', 'https://moodle.org', 'local_adminhome');
+
+        $this->assertSame([
+            ['text' => 'Enrol users', 'url' => $CFG->wwwroot . '/user/index.php'],
+            ['text' => 'Moodle', 'url' => 'https://moodle.org'],
+        ], $this->export()['links']);
+
+        $this->setUser($this->getDataGenerator()->create_user());
+        $this->assertFalse($this->export()['haslinks']);
+    }
+
+    /**
      * Only the chosen categories are shown, a chosen subcategory is not repeated and empty ones are left out.
      */
     public function test_categories(): void {
