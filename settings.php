@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Plugin settings: switch, who sees the custom home and which categories it shows.
+ * Plugin settings, in three tabs: general switch, who sees the custom home and what they see.
  *
  * @package     local_adminhome
  * @copyright   2026 by IDEF https://idef21.com
@@ -25,26 +25,24 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage('local_adminhome', get_string('pluginname', 'local_adminhome'));
+    $settings = new theme_boost_admin_settingspage_tabs('local_adminhome', get_string('pluginname', 'local_adminhome'));
     $ADMIN->add('localplugins', $settings);
 
-    // The choices are only built when the settings page itself is shown, not on every admin page.
+    // The tabs and their choices are only built when the settings page itself is shown, not on every admin page.
     if ($ADMIN->fulltree) {
-        // Switch for the whole plugin logic: when off, nobody is redirected.
-        $settings->add(new admin_setting_configcheckbox(
+        // Tab 1: switch for the whole plugin logic; when off, nobody is redirected.
+        $page = new admin_settingpage('local_adminhome_general', get_string('tab_general', 'local_adminhome'));
+        $page->add(new admin_setting_configcheckbox(
             'local_adminhome/enabled',
             get_string('enabled', 'local_adminhome'),
             get_string('enabled_desc', 'local_adminhome'),
             1
         ));
+        $settings->add_tab($page);
 
-        // Who sees the custom home.
-        $settings->add(new admin_setting_heading(
-            'local_adminhome/whoheading',
-            get_string('whoheading', 'local_adminhome'),
-            ''
-        ));
-        $settings->add(new admin_setting_configcheckbox(
+        // Tab 2: who sees the custom home.
+        $page = new admin_settingpage('local_adminhome_who', get_string('whoheading', 'local_adminhome'));
+        $page->add(new admin_setting_configcheckbox(
             'local_adminhome/siteadmins',
             get_string('siteadmins', 'local_adminhome'),
             get_string('siteadmins_desc', 'local_adminhome'),
@@ -57,41 +55,38 @@ if ($hassiteconfig) {
             }
             $roles[$role->id] = $role->localname;
         }
-        $settings->add(new admin_setting_configmultiselect(
+        $page->add(new admin_setting_configmultiselect(
             'local_adminhome/roles',
             get_string('roles', 'local_adminhome'),
             get_string('roles_desc', 'local_adminhome'),
             [],
             $roles
         ));
-        $settings->add(new admin_setting_configcheckbox(
+        $page->add(new admin_setting_configcheckbox(
             'local_adminhome/showfrontpage',
             get_string('showfrontpage', 'local_adminhome'),
             get_string('showfrontpage_desc', 'local_adminhome'),
             0
         ));
+        $settings->add_tab($page);
 
-        // What the custom home shows.
-        $settings->add(new admin_setting_heading(
-            'local_adminhome/whatheading',
-            get_string('whatheading', 'local_adminhome'),
-            ''
-        ));
-        // One switch per site summary card (shown to site admins only).
+        // Tab 3: what the custom home shows. One switch per site summary card (shown to site admins only).
+        $page = new admin_settingpage('local_adminhome_what', get_string('whatheading', 'local_adminhome'));
         foreach (['users', 'courses', 'today', 'never'] as $card) {
-            $settings->add(new admin_setting_configcheckbox(
+            $page->add(new admin_setting_configcheckbox(
                 'local_adminhome/showcard_' . $card,
                 get_string('card_setting', 'local_adminhome', get_string('card_' . $card, 'local_adminhome')),
                 get_string('card_' . $card . '_desc', 'local_adminhome'),
                 1
             ));
         }
-        $settings->add(new admin_setting_configmultiselect(
+        $page->add(new admin_setting_configmultiselect(
             'local_adminhome/categories',
             get_string('categories', 'local_adminhome'),
             get_string('categories_desc', 'local_adminhome'),
             [],
             core_course_category::make_categories_list()
         ));
+        $settings->add_tab($page);
     }
 }
