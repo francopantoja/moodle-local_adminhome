@@ -13,19 +13,66 @@
     margin-bottom: 28px;
 }
 
+/* Category title: the clickable line that expands or collapses it. */
 .local-adminhome-cat-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
     color: var(--local-adminhome-text);
     border-left: 5px solid var(--local-adminhome-brand);
-    padding-left: 10px;
+    padding: 4px 10px;
+    font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 14px;
 }
 
-/* Subcategories: a lighter tone of the brand colour. */
-.local-adminhome-subcat-title {
-    font-size: 1.05rem;
-    opacity: 0.9;
+/* Hide the default triangle of <summary> and draw our own arrow, which turns when expanded. */
+.local-adminhome-cat-title::-webkit-details-marker {
+    display: none;
+}
+
+.local-adminhome-cat-title::before {
+    content: "";
+    flex: none;
+    width: 0.55em;
+    height: 0.55em;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.15s ease;
+    opacity: 0.6;
+}
+
+.local-adminhome-cat[open] > .local-adminhome-cat-title::before {
+    transform: rotate(45deg);
+}
+
+.local-adminhome-cat-title:hover {
+    background: color-mix(in srgb, var(--local-adminhome-brand) 8%, transparent);
+}
+
+/* Number of courses in the branch: a pastel pill. */
+.local-adminhome-cat-count {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.1rem 0.6rem;
+    border-radius: 2rem;
+    color: color-mix(in srgb, var(--local-adminhome-brand) 80%, #000);
+    background: color-mix(in srgb, var(--local-adminhome-brand) 15%, #fff);
+}
+
+/* Subcategories: indented, with a lighter tone of the brand colour. */
+.local-adminhome-subcat {
+    margin: 0 0 12px 24px;
+}
+
+.local-adminhome-subcat > .local-adminhome-cat-title {
+    font-size: 1.1rem;
     border-left-color: color-mix(in srgb, var(--local-adminhome-brand) 45%, #fff);
+    margin-bottom: 10px;
 }
 
 .local-adminhome-course {

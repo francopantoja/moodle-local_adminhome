@@ -41,23 +41,15 @@ class main implements renderable, templatable {
      * @return array
      */
     public function export_for_template(renderer_base $output): array {
+        // Subcategories start expanded only when the settings say so; never saved means only the main ones.
+        $openall = get_config('local_adminhome', 'expandcategories') === 'all';
+
         $categories = [];
-
         foreach (self::get_selected_categories() as $category) {
-            // Each chosen category with its subcategories, collected recursively.
-            $groups = [];
-            self::collect_groups($category, 0, $groups);
-
-            // Keep only top categories that have at least one course (anywhere in the tree).
-            $hascourses = false;
-            foreach ($groups as $group) {
-                if (!empty($group['courses'])) {
-                    $hascourses = true;
-                    break;
-                }
-            }
-            if ($hascourses) {
-                $categories[] = ['groups' => $groups];
+            // Each chosen category with its subcategories inside; empty branches are left out.
+            $node = self::build_node($category, 0, $openall);
+            if ($node) {
+                $categories[] = $node;
             }
         }
 
@@ -194,13 +186,17 @@ class main implements renderable, templatable {
     }
 
     /**
-     * Recursively collect a category and its descendants as flat groups.
+     * Build a category as a tree node: its courses and its subcategories inside, recursively.
+     *
+     * Every node has all the keys, even when empty: the template is recursive and Mustache would
+     * otherwise look up a missing key in the parent node.
      *
      * @param core_course_category $category
-     * @param int $depth
-     * @param array $groups passed by reference, appended in tree order.
+     * @param int $depth 0 for the main categories.
+     * @param bool $openall Whether subcategories start expanded too.
+     * @return array|null Null when there is no course in the whole branch.
      */
-    private static function collect_groups(core_course_category $category, int $depth, array &$groups): void {
+    private static function build_node(core_course_category $category, int $depth, bool $openall): ?array {
         $courses = [];
         foreach ($category->get_courses() as $course) {
             $courses[] = [
@@ -209,17 +205,30 @@ class main implements renderable, templatable {
             ];
         }
 
-        $groups[] = [
-            'name'       => format_string($category->get_formatted_name()),
-            'issub'      => $depth > 0,
-            // Left indentation in px, 24 per level.
-            'indent'     => $depth * 24,
-            'courses'    => $courses,
-            'hascourses' => !empty($courses),
-        ];
-
+        $children = [];
+        $count = count($courses);
         foreach ($category->get_children() as $child) {
-            self::collect_groups($child, $depth + 1, $groups);
+            $node = self::build_node($child, $depth + 1, $openall);
+            if ($node) {
+                $children[] = $node;
+                $count += $node['count'];
+            }
         }
+
+        if ($count === 0) {
+            return null;
+        }
+
+        return [
+            'name'        => format_string($category->get_formatted_name()),
+            'issub'       => $depth > 0,
+            // Main categories always start expanded; subcategories depend on the setting.
+            'open'        => $depth === 0 || $openall,
+            // Courses in the whole branch, subcategories included.
+            'count'       => $count,
+            'courses'     => $courses,
+            'children'    => $children,
+            'haschildren' => !empty($children),
+        ];
     }
 }

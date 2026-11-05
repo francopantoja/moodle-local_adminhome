@@ -130,26 +130,51 @@ final class main_test extends \advanced_testcase {
         $generator->create_course(['category' => $catb->id]);
         $this->setAdminUser();
 
-        // None chosen: every top category with courses.
-        $this->assertSame([['Cat A', 'Sub A'], ['Cat B']], $this->group_names($this->export()));
+        // None chosen: every top category with courses, the subcategory inside its parent.
+        $categories = $this->export()['categories'];
+        $this->assertSame(['Cat A' => ['Sub A' => []], 'Cat B' => []], $this->tree($categories));
+        // The course count includes the subcategories.
+        $this->assertSame(2, $categories[0]['count']);
 
         // Cat A and its subcategory chosen: Cat A once, with the subcategory inside.
         set_config('categories', $cata->id . ',' . $subcat->id, 'local_adminhome');
-        $this->assertSame([['Cat A', 'Sub A']], $this->group_names($this->export()));
+        $this->assertSame(['Cat A' => ['Sub A' => []]], $this->tree($this->export()['categories']));
     }
 
     /**
-     * Returns the names of the groups with courses, per top category.
+     * Main categories start expanded; subcategories only when the setting says so (never saved: collapsed).
+     */
+    public function test_expand_categories(): void {
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+
+        $cat = $generator->create_category();
+        $subcat = $generator->create_category(['parent' => $cat->id]);
+        $generator->create_course(['category' => $subcat->id]);
+        set_config('categories', $cat->id, 'local_adminhome');
+        $this->setAdminUser();
+
+        $main = $this->export()['categories'][0];
+        $this->assertTrue($main['open']);
+        $this->assertFalse($main['children'][0]['open']);
+
+        set_config('expandcategories', 'all', 'local_adminhome');
+        $main = $this->export()['categories'][0];
+        $this->assertTrue($main['open']);
+        $this->assertTrue($main['children'][0]['open']);
+    }
+
+    /**
+     * Returns the category tree as nested arrays of names.
      *
-     * @param array $data Exported data.
+     * @param array $nodes Category nodes.
      * @return array
      */
-    protected function group_names(array $data): array {
-        $names = [];
-        foreach ($data['categories'] as $category) {
-            $groups = array_filter($category['groups'], fn($group) => $group['hascourses']);
-            $names[] = array_values(array_column($groups, 'name'));
+    protected function tree(array $nodes): array {
+        $tree = [];
+        foreach ($nodes as $node) {
+            $tree[$node['name']] = $this->tree($node['children']);
         }
-        return $names;
+        return $tree;
     }
 }

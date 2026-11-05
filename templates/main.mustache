@@ -27,13 +27,7 @@
     * showfrontpage - Whether the button to the normal frontpage is shown.
     * frontpageurl - URL to view the real frontpage (bypassing the redirect).
     * hascategories - Whether there is at least one category with courses.
-    * categories - Array of top-level categories, each with:
-        * groups - Flat, tree-ordered array of category groups, each with:
-            * name - Category (or subcategory) name.
-            * issub - Whether it is a subcategory.
-            * indent - Left indentation in px.
-            * hascourses - Whether this group has courses.
-            * courses - Array of courses, each with: name, url.
+    * categories - Array of main categories, as in the template local_adminhome/category.
 
     Example context (json):
     {
@@ -46,17 +40,13 @@
         "hascategories": true,
         "categories": [
             {
-                "groups": [
-                    {
-                        "name": "Categoría 1",
-                        "issub": false,
-                        "indent": 0,
-                        "hascourses": true,
-                        "courses": [
-                            {"name": "Curso 1", "url": "https://example.com/course/view.php?id=2"}
-                        ]
-                    }
-                ]
+                "name": "Category 1",
+                "issub": false,
+                "open": true,
+                "count": 1,
+                "courses": [{"name": "Course 1", "url": "https://example.com/course/view.php?id=2"}],
+                "haschildren": false,
+                "children": []
             }
         ]
     }
@@ -93,18 +83,7 @@
     {{#hascategories}}
         <div class="local-adminhome-cats">
             {{#categories}}
-                <section class="local-adminhome-cat">
-                    {{#groups}}
-                        {{#hascourses}}
-                            <div class="local-adminhome-group" style="margin-left: {{indent}}px;">
-                                <h3 class="local-adminhome-cat-title {{#issub}}local-adminhome-subcat-title{{/issub}}">{{name}}</h3>
-                                {{#courses}}
-                                    <a class="local-adminhome-course" href="{{url}}">{{name}}</a>
-                                {{/courses}}
-                            </div>
-                        {{/hascourses}}
-                    {{/groups}}
-                </section>
+                {{> local_adminhome/category}}
             {{/categories}}
         </div>
     {{/hascategories}}

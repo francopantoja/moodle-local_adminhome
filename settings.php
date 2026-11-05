@@ -87,6 +87,16 @@ if ($hassiteconfig) {
             [],
             core_course_category::make_categories_list()
         ));
+        $page->add(new admin_setting_configselect(
+            'local_adminhome/expandcategories',
+            get_string('expandcategories', 'local_adminhome'),
+            get_string('expandcategories_desc', 'local_adminhome'),
+            'top',
+            [
+                'top' => get_string('expandcategories_top', 'local_adminhome'),
+                'all' => get_string('expandcategories_all', 'local_adminhome'),
+            ]
+        ));
         $settings->add_tab($page);
     }
 }
