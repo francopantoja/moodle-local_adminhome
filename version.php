@@ -25,7 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_adminhome';
-$plugin->version   = 2026110401;
-$plugin->requires  = 2024100700; // Moodle 4.5.
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.1.1';
+$plugin->version   = 2026111300;
+$plugin->requires  = 2026042000; // Moodle 5.2.
+$plugin->supported = [502, 502]; // Only Moodle 5.2, the version tested in the CI.
+$plugin->maturity  = MATURITY_STABLE;
+$plugin->release   = '1.0.0';

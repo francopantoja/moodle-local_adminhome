@@ -17,22 +17,30 @@ their first name.
     * 📚 Courses: visible courses.
     * 🟢 Online today: users who have accessed the site since midnight.
     * 😴 Never accessed: accounts that have never logged in.
-* **Courses grouped by category**, with their subcategories, using the brand colour of the theme.
-* **Who sees it**: site administrators and/or any roles you choose ("Authenticated user" for everybody).
+* 🔗 **Quick links** (site administrators only): up to three shortcuts to the pages you use the most,
+  for example "Enrol users", shown as boxes under the cards.
+* 📂 **Courses grouped by category**, collapsible with a click, with the number of courses of each
+  category and its subcategories inside. Colours come from the brand colour of the theme.
+* 👥 **Who sees it**: site administrators and/or any roles you choose ("Authenticated user" for everybody).
 * **Button to the normal frontpage**: always for administrators, optional for the rest.
 
 ## Settings ##
 
-*Site administration > Plugins > Local plugins > Eazy Home*
+*Site administration > Plugins > Local plugins > Eazy Home*, in four tabs:
 
-| Setting | Default |
-|---|---|
-| Enable Eazy Home | Yes |
-| Site administrators | Yes |
-| Roles | None |
-| Button to the normal frontpage | No |
-| Card: Users / Courses / Online today / Never accessed | Yes |
-| Categories to show | None (all the categories) |
+| Tab | Setting | Default |
+|---|---|---|
+| ⚙️ General | Enable Eazy Home | Yes |
+| 👥 Who sees it | Site administrators | Yes |
+| 👥 Who sees it | Roles | None |
+| 👥 Who sees it | Button to the normal frontpage | No |
+| 📂 What they see | Card: Users / Courses / Online today / Never accessed | Yes |
+| 📂 What they see | Categories to show | None (all the categories) |
+| 📂 What they see | Subcategories when the page opens | Collapsed (only the main categories) |
+| 🔗 Quick links | Link 1-3: text and URL | Empty (no links) |
+
+A quick link is only shown when it has both text and URL. The URL can be a full address
+(`https://...`) or a page of the site (`/user/index.php`).
 
 ## How it works ##
 
@@ -60,7 +68,7 @@ Notifications_ to complete the installation.
 
 ## Requirements ##
 
-Moodle 4.5 or later.
+Moodle 5.2.
 
 ## Privacy ##
 
